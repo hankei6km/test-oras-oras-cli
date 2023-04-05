@@ -1,0 +1,34 @@
+name: "Test: push a package to ghcr.io by using oras-cli in workflow"
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - "**"
+  #     - "!main"
+  #   tags:
+  #     - "!v*"
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install oras-cli
+        run: ./scripts/install-oras.sh
+
+      - name: Push a package to ghcr.io
+        run: ./scripts/push-package.sh "${PACKAGE}"
+        env:
+          MY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE: "pacakge1"
+
+      - name: Push a package to ghcr.io(pat)
+        run: ./scripts/push-package.sh "${PACKAGE}"
+        env:
+          # 試すときは PAT(Classic) を作成して Secret を更新すること。
+          MY_TOKEN: ${{ secrets.PAT_CLASSIC }}
+          PACKAGE: "pacakge2"
