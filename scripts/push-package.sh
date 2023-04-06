@@ -16,8 +16,11 @@ PACKAGE="${1}"
 
 envsubst < "${BASE_DIR}/envsubst_token.txt" | "${ORAS_CLI}" login "${REGISTRY}" --username "${USER}" --password-stdin --registry-config "${REGISTRY_CONFIG}"
 
+cp "${BASE_DIR}/../README.md" "${BASE_DIR}/README.md"
+cd "${BASE_DIR}"
 "${ORAS_CLI}" push \
     "${REGISTRY}/${GITHUB_REPOSITORY}/${PACKAGE}:latest" \
-    "${BASE_DIR}/../README.md:application/markdown" \
+    "README.md:application/markdown" \
     --annotation-file <(envsubst '${GITHUB_REPOSITORY}' < "${BASE_DIR}/envsubst_annotation.txt") \
     --registry-config "${REGISTRY_CONFIG}"
+rm "${BASE_DIR}/README.md"
